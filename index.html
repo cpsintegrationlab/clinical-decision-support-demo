@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinical Decision Support Demo — CPS Integration Lab</title>
+<meta name="description" content="Video demonstrations of clinical decision support systems for pediatric advanced life support and pediatric sepsis care.">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --surface: #141a22;
+    --surface-2: #1b232d;
+    --border: #263140;
+    --text: #e8edf3;
+    --muted: #94a3b3;
+    --accent: #38bdf8;
+    --accent-strong: #0ea5e9;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1100px 600px at 50% -280px, #16283a 0%, transparent 70%),
+      var(--bg);
+    color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  header {
+    padding: 88px 0 56px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    background: rgba(56, 189, 248, 0.08);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin-bottom: 22px;
+  }
+
+  h1 {
+    margin: 0 0 16px;
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .lede {
+    margin: 0 auto;
+    max-width: 620px;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  .demos {
+    display: grid;
+    gap: 56px;
+  }
+
+  .demo-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .demo p.blurb {
+    margin: 0 0 20px;
+    color: var(--muted);
+    max-width: 70ch;
+  }
+
+  .player {
+    position: relative;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 22px 50px -28px rgba(0, 0, 0, 0.9);
+  }
+
+  .player video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: linear-gradient(180deg, rgba(4, 8, 12, 0.28) 0%, rgba(4, 8, 12, 0.52) 100%);
+    transition: background 0.2s ease;
+    color: inherit;
+    font: inherit;
+  }
+
+  .overlay[hidden] { display: none; }
+
+  .overlay:hover,
+  .overlay:focus-visible {
+    background: linear-gradient(180deg, rgba(4, 8, 12, 0.16) 0%, rgba(4, 8, 12, 0.42) 100%);
+    outline: none;
+  }
+
+  .play-btn {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: rgba(14, 165, 233, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 10px rgba(56, 189, 248, 0.16), 0 14px 34px -10px rgba(0, 0, 0, 0.8);
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .overlay:hover .play-btn,
+  .overlay:focus-visible .play-btn {
+    transform: scale(1.08);
+    background: var(--accent);
+    box-shadow: 0 0 0 14px rgba(56, 189, 248, 0.2), 0 14px 34px -10px rgba(0, 0, 0, 0.8);
+  }
+
+  .overlay:active .play-btn { transform: scale(0.98); }
+
+  .play-btn svg {
+    width: 30px;
+    height: 34px;
+    margin-left: 5px;
+    fill: #04121c;
+  }
+
+  .play-label {
+    position: absolute;
+    bottom: 18px;
+    left: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.86);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  }
+
+  .fallback {
+    padding: 20px;
+    color: var(--muted);
+  }
+
+  .fallback a { color: var(--accent); }
+
+  footer {
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    justify-content: space-between;
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .play-btn, .overlay { transition: none; }
+    .overlay:hover .play-btn { transform: none; }
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 56px 0 40px; }
+    .demos { gap: 44px; }
+    .play-btn { width: 66px; height: 66px; }
+    .play-btn svg { width: 24px; height: 27px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">CPS Integration Lab</span>
+    <h1>Clinical Decision Support Demo</h1>
+    <p class="lede">
+      Video walkthroughs of two real-time clinical decision support systems built to guide
+      care teams through time-critical pediatric protocols.
+    </p>
+  </header>
+
+  <main class="demos">
+
+    <section class="demo">
+      <div class="demo-head">
+        <h2>PALS Simulation</h2>
+        <span class="meta">2:04 &middot; 1920&times;1080</span>
+      </div>
+      <p class="blurb">
+        Pediatric Advanced Life Support simulation: a code-timer and protocol
+        checklist driving CPR quality, rhythm assessment, and medication dosing, synchronized
+        with live patient monitoring and hemodynamics.
+      </p>
+      <div class="player">
+        <video id="video-pals" preload="metadata" playsinline
+               poster="assets/PALS-poster.jpg">
+          <source src="PALS-simulation.mp4" type="video/mp4">
+          <p class="fallback">
+            Your browser can&rsquo;t play this video.
+            <a href="PALS-simulation.mp4">Download the MP4</a> instead.
+          </p>
+        </video>
+        <button class="overlay" type="button" data-video="video-pals"
+                aria-label="Play PALS Simulation video">
+          <span class="play-btn" aria-hidden="true">
+            <svg viewBox="0 0 24 28"><path d="M2 1.5 22 14 2 26.5z"/></svg>
+          </span>
+          <span class="play-label">Play &middot; 2:04</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="demo">
+      <div class="demo-head">
+        <h2>PSepsis Guidance Demo</h2>
+        <span class="meta">2:37 &middot; 3440&times;1440</span>
+      </div>
+      <p class="blurb">
+        The OSF PSepsis bundle in action: bundle-adherence tracking, antibiotic and fluid
+        therapy ordering, and a paired simulation portal that streams vitals and lab values
+        into the guidance system as the case evolves.
+      </p>
+      <div class="player">
+        <video id="video-psepsis" preload="metadata" playsinline
+               poster="assets/psepsis-poster.jpg">
+          <source src="psepsis-demo.mp4" type="video/mp4">
+          <p class="fallback">
+            Your browser can&rsquo;t play this video.
+            <a href="psepsis-demo.mp4">Download the MP4</a> instead.
+          </p>
+        </video>
+        <button class="overlay" type="button" data-video="video-psepsis"
+                aria-label="Play PSepsis Guidance Demo video">
+          <span class="play-btn" aria-hidden="true">
+            <svg viewBox="0 0 24 28"><path d="M2 1.5 22 14 2 26.5z"/></svg>
+          </span>
+          <span class="play-label">Play &middot; 2:37</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>CPS Integration Lab &middot; Clinical Decision Support</span>
+    <a href="https://github.com/cpsintegrationlab/clinical-decision-support-demo">View source on GitHub</a>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.overlay').forEach(function (overlay) {
+    var video = document.getElementById(overlay.dataset.video);
+    if (!video) return;
+
+    overlay.addEventListener('click', function () {
+      // Pause any other playing demo so two videos never talk over each other.
+      document.querySelectorAll('video').forEach(function (other) {
+        if (other !== video) other.pause();
+      });
+      overlay.hidden = true;
+      video.controls = true;
+      video.play();
+      video.focus();
+    });
+
+    // Bring the poster overlay back when the video finishes.
+    video.addEventListener('ended', function () {
+      video.controls = false;
+      video.currentTime = 0;
+      overlay.hidden = false;
+    });
+  });
+</script>
+</body>
+</html>
